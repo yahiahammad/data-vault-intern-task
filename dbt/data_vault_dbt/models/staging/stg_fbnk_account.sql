@@ -8,7 +8,7 @@ derived_columns:
   account_number: "recid"
   customer_id: "customer"
   branch_id: "co_code"
-  load_dts: "cast(created_ts as timestamp)"
+  load_dts: "cast(current_timestamp as timestamp)"
   record_source: "concat(source_system, '.', source_table)"
 
 hashed_columns:

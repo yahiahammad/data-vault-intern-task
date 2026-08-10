@@ -9,7 +9,7 @@ models:
         data_tests:
           - not_null
       - name: load_dts
-        description: "Version timestamp, cast from created_ts."
+        description: "Batch load timestamp — the DB's clock at insert time, i.e. when this record was actually loaded into the vault."
         data_tests:
           - not_null
 
@@ -21,7 +21,7 @@ models:
         data_tests:
           - not_null
       - name: load_dts
-        description: "Version timestamp, cast from created_ts."
+        description: "Batch load timestamp — the DB's clock at insert time, i.e. when this record was actually loaded into the vault."
         data_tests:
           - not_null
 
@@ -34,6 +34,27 @@ models:
           - not_null
           - unique
       - name: load_dts
-        description: "Entry timestamp, cast from created_ts."
+        description: "Batch load timestamp — the DB's clock at insert time, i.e. when this record was actually loaded into the vault."
+        data_tests:
+          - not_null
+
+  - name: stg_seed_account_officer
+    description: "Passthrough of the seed_account_officer reference seed, with load_dts/record_source added."
+    columns:
+      - name: account_officer
+        data_tests:
+          - not_null
+
+  - name: stg_seed_product_category
+    description: "Passthrough of the seed_product_category reference seed, with load_dts/record_source added."
+    columns:
+      - name: product_category
+        data_tests:
+          - not_null
+
+  - name: stg_seed_transaction_code
+    description: "Passthrough of the seed_transaction_code reference seed, with load_dts/record_source added."
+    columns:
+      - name: transaction_code
         data_tests:
           - not_null

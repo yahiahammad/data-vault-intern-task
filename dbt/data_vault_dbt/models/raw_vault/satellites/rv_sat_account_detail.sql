@@ -4,7 +4,7 @@
                                 'opening_date', 'closure_date', 'record_status', 'closed_online',
                                 'inactiv_marker', 'posting_restrict', 'limit_ref', 'account_officer'],
                    src_extra_columns=none,
-                   src_eff=none,
+                   src_eff='created_ts',
                    src_ldts='load_dts',
                    src_source='record_source',
                    source_model='stg_fbnk_account') }}

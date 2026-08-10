@@ -7,7 +7,7 @@ source_model:
 derived_columns:
   stmt_entry_id: "recid"
   branch_id: "company_code"
-  load_dts: "cast(created_ts as timestamp)"
+  load_dts: "cast(current_timestamp as timestamp)"
   record_source: "concat(source_system, '.', source_table)"
 
 hashed_columns:

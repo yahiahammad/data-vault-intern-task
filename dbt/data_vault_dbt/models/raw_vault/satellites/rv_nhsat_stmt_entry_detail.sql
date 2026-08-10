@@ -6,7 +6,7 @@
                                 'trans_reference', 'reversal_marker', 'narrative', 'cheque_number', 'chq_type',
                                 'counterparty', 'account_officer', 'position_type', 'system_id'],
                    src_extra_columns=none,
-                   src_eff=none,
+                   src_eff='created_ts',
                    src_ldts='load_dts',
                    src_source='record_source',
                    source_model='stg_fbnk_stmt_entry') }}

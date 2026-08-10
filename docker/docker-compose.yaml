@@ -1,6 +1,7 @@
 x-airflow-common:
   &airflow-common
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.3.0}
+  image: ${AIRFLOW_IMAGE_NAME:-data-vault-airflow:3.3.0}
+  build: ./airflow
   env_file:
     - ${ENV_FILE_PATH:-.env}
   environment:
@@ -17,11 +18,14 @@ x-airflow-common:
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
+    # picked up by Cosmos's PostgresUserPasswordProfileMapping via conn_id="postgres_data_vault"
+    AIRFLOW_CONN_POSTGRES_DATA_VAULT: postgresql://postgres:postgres@postgres:5432/mydb
   volumes:
     - ${AIRFLOW_PROJ_DIR:-./airflow}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-./airflow}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-./airflow}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-./airflow}/plugins:/opt/airflow/plugins
+    - ../dbt/data_vault_dbt:/opt/airflow/dbt/data_vault_dbt
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on

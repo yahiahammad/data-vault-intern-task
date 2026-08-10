@@ -161,6 +161,83 @@ services:
     depends_on:
       <<: *airflow-common-depends-on
 
+  # Caches Superset's chart/dashboard query results (see docker/superset/superset_config.py).
+  redis:
+    image: redis:7.2-bookworm
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  superset-postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: superset
+      POSTGRES_PASSWORD: superset
+      POSTGRES_DB: superset
+    volumes:
+      - superset-postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "superset"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+
+  superset:
+    image: ${SUPERSET_IMAGE_NAME:-data-vault-superset:latest}
+    build: ./superset
+    restart: unless-stopped
+    environment: &superset-env
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
+      SUPERSET_DB_USER: superset
+      SUPERSET_DB_PASSWORD: superset
+      SUPERSET_DB_HOST: superset-postgres
+      SUPERSET_DB_PORT: "5432"
+      SUPERSET_DB_NAME: superset
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+    volumes:
+      - ./superset/superset_config.py:/app/pythonpath/superset_config.py:ro
+      - superset-home:/app/superset_home
+    ports:
+      - "8088:8088"
+    depends_on:
+      superset-postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      superset-init:
+        condition: service_completed_successfully
+
+  # One-shot: creates Superset's metadata tables + admin user, then exits.
+  superset-init:
+    image: ${SUPERSET_IMAGE_NAME:-data-vault-superset:latest}
+    build: ./superset
+    environment: *superset-env
+    volumes:
+      - ./superset/superset_config.py:/app/pythonpath/superset_config.py:ro
+      - superset-home:/app/superset_home
+    depends_on:
+      superset-postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        superset db upgrade
+        superset fab create-admin --username "${SUPERSET_ADMIN_USERNAME:-admin}" --firstname Admin --lastname Admin --email admin@example.com --password "${SUPERSET_ADMIN_PASSWORD:-admin}" || true
+        superset init
+
 volumes:
   pgdata:
   airflow-postgres-db-volume:
+  redis-data:
+  superset-postgres-db-volume:
+  superset-home:

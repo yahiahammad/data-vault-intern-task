@@ -1,1 +1,7 @@
 docker/.env
+
+# Airflow runtime output (container-generated, not source)
+docker/airflow/logs/
+docker/airflow/plugins/
+docker/airflow/config/
+__pycache__/

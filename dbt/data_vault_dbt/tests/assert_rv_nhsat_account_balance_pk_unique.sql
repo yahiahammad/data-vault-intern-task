@@ -1,5 +1,6 @@
--- Composite primary key (account_hk, load_dts) must be unique.
-select account_hk, load_dts, count(*) as row_count
+-- Composite primary key (account_hk, load_dts, created_ts) must be unique.
+-- created_ts (src_eff) breaks ties when >1 real version of the same key lands in one load batch.
+select account_hk, load_dts, created_ts, count(*) as row_count
 from {{ ref('rv_nhsat_account_balance') }}
-group by account_hk, load_dts
+group by account_hk, load_dts, created_ts
 having count(*) > 1

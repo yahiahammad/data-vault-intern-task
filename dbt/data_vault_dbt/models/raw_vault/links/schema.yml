@@ -1,0 +1,90 @@
+version: 2
+
+models:
+  - name: rv_link_customer_account
+    description: "One row per distinct (customer, account) ownership pair, from fbnk_account.customer."
+    columns:
+      - name: customer_account_hk
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_customer')
+                field: customer_hk
+      - name: account_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_account')
+                field: account_hk
+
+  - name: rv_link_customer_branch
+    description: "One row per distinct (customer, branch) pair, from fbnk_customer.company_book."
+    columns:
+      - name: customer_branch_hk
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_customer')
+                field: customer_hk
+      - name: branch_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_branch')
+                field: branch_hk
+
+  - name: rv_link_account_branch
+    description: "One row per distinct (account, branch) pair, from fbnk_account.co_code."
+    columns:
+      - name: account_branch_hk
+        data_tests:
+          - unique
+          - not_null
+      - name: account_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_account')
+                field: account_hk
+      - name: branch_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_branch')
+                field: branch_hk
+
+  - name: rv_nhlink_stmt_entry
+    description: "One row per statement entry, an immutable event linking account and branch. Customer is deliberately not a link FK here since it's optional (empty for internal-account entries) - see rv_link_customer_account for that relationship."
+    columns:
+      - name: stmt_entry_hk
+        data_tests:
+          - unique
+          - not_null
+      - name: account_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_account')
+                field: account_hk
+      - name: branch_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_branch')
+                field: branch_hk

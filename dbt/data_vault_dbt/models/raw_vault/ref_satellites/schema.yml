@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: rv_ref_sat_transaction_code
+    description: "One row per transaction_code, its description. Sourced from seeds/seed_transaction_code.csv since descriptions aren't in the raw data."
+    columns:
+      - name: transaction_code
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_ref_hub_transaction_code')
+                field: transaction_code
+
+  - name: rv_ref_sat_product_category
+    description: "One row per product_category, its description. Sourced from seeds/seed_product_category.csv."
+    columns:
+      - name: product_category
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_ref_hub_product_category')
+                field: product_category
+
+  - name: rv_ref_sat_account_officer
+    description: "One row per account_officer code, its description. Sourced from seeds/seed_account_officer.csv."
+    columns:
+      - name: account_officer
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_ref_hub_account_officer')
+                field: account_officer

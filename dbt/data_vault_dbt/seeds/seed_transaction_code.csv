@@ -1,0 +1,9 @@
+transaction_code,description
+101,Cash deposit
+102,Cash withdrawal
+201,Incoming transfer
+202,Outgoing transfer
+301,Cheque deposit
+401,Charges
+501,Interest credit
+601,Reversal

@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: stg_fbnk_customer
+    description: "One row per customer version, parsed from T24's fbnk_customer extract."
+    columns:
+      - name: customer_id
+        description: "Customer business key, split off the recid prefix before the ';'."
+        data_tests:
+          - not_null
+      - name: load_dts
+        description: "Version timestamp, cast from created_ts."
+        data_tests:
+          - not_null
+
+  - name: stg_fbnk_account
+    description: "One row per account version, parsed from T24's fbnk_account extract."
+    columns:
+      - name: account_number
+        description: "Account business key, taken directly from recid."
+        data_tests:
+          - not_null
+      - name: load_dts
+        description: "Version timestamp, cast from created_ts."
+        data_tests:
+          - not_null
+
+  - name: stg_fbnk_stmt_entry
+    description: "One row per accounting entry, parsed from T24's fbnk_stmt_entry extract."
+    columns:
+      - name: stmt_entry_id
+        description: "Statement entry business key, taken directly from recid."
+        data_tests:
+          - not_null
+          - unique
+      - name: load_dts
+        description: "Entry timestamp, cast from created_ts."
+        data_tests:
+          - not_null

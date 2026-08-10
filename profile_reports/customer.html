@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>fbnk_customer profiling</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+  margin: 0; padding: 2rem 3rem 4rem;
+  background: #f6f7f9; color: #1f2328;
+}
+@media (prefers-color-scheme: dark) {
+  body { background: #0d1117; color: #e6edf3; }
+  section, .card { background: #161b22 !important; border-color: #30363d !important; }
+  table { border-color: #30363d !important; }
+  th { background: #21262d !important; }
+  tr.row-bad { background: #3b1418 !important; }
+  tr.row-warn { background: #3a2e12 !important; }
+  .flagged { background: #3b1418 !important; border-color: #cf222e !important; }
+  .bar { background: #2f81f7 !important; }
+  a { color: #58a6ff !important; }
+}
+header { margin-bottom: 1.5rem; }
+h1 { margin: 0 0 .25rem; }
+.subtitle { color: #656d76; margin: 0; }
+nav { margin-bottom: 2rem; }
+nav a { margin-right: 1rem; font-weight: 600; text-decoration: none; }
+.stat-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.card {
+  background: #fff; border: 1px solid #d0d7de; border-radius: 8px;
+  padding: .9rem 1.2rem; min-width: 160px;
+}
+.card .n { font-size: 1.6rem; font-weight: 700; display: block; }
+.card .label { color: #656d76; font-size: .8rem; }
+section {
+  background: #fff; border: 1px solid #d0d7de; border-radius: 8px;
+  padding: 1.2rem 1.5rem; margin-bottom: 1.3rem;
+}
+h2 { font-size: 1.05rem; margin: 0 0 .8rem; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; padding: .35rem .6rem; border-bottom: 1px solid #eaeef2; }
+th { background: #f6f8fa; }
+tr.row-bad { background: #ffebe9; }
+tr.row-warn { background: #fff8c5; }
+.bar-table td { border: none; padding: .25rem .6rem; }
+.bar-label { width: 12rem; white-space: nowrap; }
+.bar-cell { position: relative; }
+.bar { display: inline-block; height: .9rem; background: #2563eb; border-radius: 3px; vertical-align: middle; }
+.bar-value { margin-left: .5rem; font-size: .8rem; color: #656d76; }
+.flagged {
+  background: #ffebe9; border: 1px solid #cf222e; border-radius: 6px; padding: .6rem 1rem;
+}
+.ok { color: #1a7f37; font-weight: 600; margin: 0; }
+.muted { color: #8b949e; margin: 0; }
+ul { margin: .3rem 0; padding-left: 1.3rem; }
+footer { color: #8b949e; font-size: .8rem; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<header><h1>fbnk_customer profiling</h1><p class="subtitle">One row per customer version (recid = customer_no;curr_no).</p></header>
+<nav><a href="index.html">Overview</a><a href="customer.html">Customer</a><a href="account.html">Account</a><a href="stmt_entry.html">Statement entry</a><a href="cross_table.html">Cross-table</a></nav>
+<div class="stat-row"><div class="card"><span class="n">15</span><span class="label">rows</span></div><div class="card"><span class="n">10</span><span class="label">distinct customers</span></div><div class="card"><span class="n">1</span><span class="label">no-op versions</span></div><div class="card"><span class="n">15</span><span class="label">columns with blanks</span></div></div>
+<section><h2>Empty columns</h2><table><thead><tr><th>column</th><th>empty</th><th>of</th><th>pct</th><th>status</th></tr></thead><tbody><tr class="row-warn"><td>emploee_no</td><td>14</td><td>15</td><td>93</td><td>partial</td></tr><tr class="row-warn"><td>posting_restrict_2</td><td>14</td><td>15</td><td>93</td><td>partial</td></tr><tr class="row-warn"><td>telephone_2</td><td>13</td><td>15</td><td>87</td><td>partial</td></tr><tr class="row-warn"><td>drmnt_code</td><td>13</td><td>15</td><td>87</td><td>partial</td></tr><tr class="row-warn"><td>drmnt_date</td><td>13</td><td>15</td><td>87</td><td>partial</td></tr><tr class="row-warn"><td>posting_restrict_1</td><td>13</td><td>15</td><td>87</td><td>partial</td></tr><tr class="row-warn"><td>email_1</td><td>12</td><td>15</td><td>80</td><td>partial</td></tr><tr class="row-warn"><td>commercial_registration_no</td><td>9</td><td>15</td><td>60</td><td>partial</td></tr><tr class="row-warn"><td>licence_expiry_date</td><td>9</td><td>15</td><td>60</td><td>partial</td></tr><tr class="row-warn"><td>telephone_1</td><td>8</td><td>15</td><td>53</td><td>partial</td></tr><tr class="row-warn"><td>genders</td><td>6</td><td>15</td><td>40</td><td>partial</td></tr><tr class="row-warn"><td>nat_security_number</td><td>6</td><td>15</td><td>40</td><td>partial</td></tr><tr class="row-warn"><td>profession</td><td>6</td><td>15</td><td>40</td><td>partial</td></tr><tr class="row-warn"><td>sms_1</td><td>6</td><td>15</td><td>40</td><td>partial</td></tr><tr class="row-warn"><td>email_address</td><td>2</td><td>15</td><td>13</td><td>partial</td></tr></tbody></table></section><section><h2>Grain: recid = customer_no;curr_no</h2><dl><dt>rows</dt><dd>15</dd><dt>distinct recid</dt><dd>10</dd><dt>ids with more than one row</dt><dd>4</dd></dl></section><section><h2>Repeated customer numbers (versions)</h2><dl><dt>100123</dt><dd>3</dd><dt>100124</dt><dd>2</dd><dt>100126</dt><dd>2</dd><dt>100129</dt><dd>2</dd></dl></section><section><h2>No-op versions (payload identical to previous version)</h2><div class="flagged"><ul><li>100129</li></ul></div></section><section><h2>genders unexpected values</h2><p class="ok">&#10003; none found</p></section><section><h2>peps unexpected values</h2><p class="ok">&#10003; none found</p></section><section><h2>id_type unexpected values</h2><p class="ok">&#10003; none found</p></section><section><h2>birth_incorp_date not a valid YYYYMMDD date</h2><div class="flagged"><table><thead><tr><th>recid</th><th>birth_incorp_date</th></tr></thead><tbody><tr><td>100128;1</td><td>00000000</td></tr></tbody></table></div></section><section><h2>sector distribution</h2><table class="bar-table"><tbody><tr><td class="bar-label">2001</td><td class="bar-cell"><div class="bar" style="width:100%"></div><span class="bar-value">9</span></td></tr><tr><td class="bar-label">1001</td><td class="bar-cell"><div class="bar" style="width:67%"></div><span class="bar-value">6</span></td></tr></tbody></table></section><section><h2>customer_status distribution</h2><table class="bar-table"><tbody><tr><td class="bar-label">1</td><td class="bar-cell"><div class="bar" style="width:100%"></div><span class="bar-value">13</span></td></tr><tr><td class="bar-label">2</td><td class="bar-cell"><div class="bar" style="width:15%"></div><span class="bar-value">2</span></td></tr></tbody></table></section><section><h2>risk_rate distribution</h2><table class="bar-table"><tbody><tr><td class="bar-label">2</td><td class="bar-cell"><div class="bar" style="width:100%"></div><span class="bar-value">7</span></td></tr><tr><td class="bar-label">1</td><td class="bar-cell"><div class="bar" style="width:71%"></div><span class="bar-value">5</span></td></tr><tr><td class="bar-label">3</td><td class="bar-cell"><div class="bar" style="width:43%"></div><span class="bar-value">3</span></td></tr></tbody></table></section><section><h2>profession distribution</h2><table class="bar-table"><tbody><tr><td class="bar-label">(empty)</td><td class="bar-cell"><div class="bar" style="width:100%"></div><span class="bar-value">6</span></td></tr><tr><td class="bar-label">PROF07</td><td class="bar-cell"><div class="bar" style="width:67%"></div><span class="bar-value">4</span></td></tr><tr><td class="bar-label">PROF12</td><td class="bar-cell"><div class="bar" style="width:33%"></div><span class="bar-value">2</span></td></tr><tr><td class="bar-label">PROF03</td><td class="bar-cell"><div class="bar" style="width:33%"></div><span class="bar-value">2</span></td></tr><tr><td class="bar-label">PROF21</td><td class="bar-cell"><div class="bar" style="width:17%"></div><span class="bar-value">1</span></td></tr></tbody></table></section>
+<footer>Generated by profile_data.py</footer>
+</body>
+</html>

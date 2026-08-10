@@ -1,0 +1,116 @@
+version: 2
+
+models:
+  - name: rv_sat_customer
+    description: "One row per customer version, shared attributes that apply to every customer."
+    columns:
+      - name: customer_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_customer')
+                field: customer_hk
+      - name: load_dts
+        data_tests:
+          - not_null
+
+  - name: rv_sat_customer_individual
+    description: "One row per customer version, attributes that only apply to individual (non-corporate) customers."
+    columns:
+      - name: customer_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_customer')
+                field: customer_hk
+
+  - name: rv_sat_customer_corporate
+    description: "One row per customer version, attributes that only apply to corporate customers."
+    columns:
+      - name: customer_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_customer')
+                field: customer_hk
+
+  - name: rv_sat_customer_status
+    description: "One row per customer version, compliance/status attributes that change over time."
+    columns:
+      - name: customer_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_customer')
+                field: customer_hk
+
+  - name: rv_sat_customer_staff
+    description: "One row per customer version, staff number, only present when the customer is also bank staff."
+    columns:
+      - name: customer_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_customer')
+                field: customer_hk
+
+  - name: rv_sat_customer_contact
+    description: "One row per customer version, contact details."
+    columns:
+      - name: customer_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_customer')
+                field: customer_hk
+
+  - name: rv_sat_account_detail
+    description: "One row per account version, descriptive account attributes."
+    columns:
+      - name: account_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_account')
+                field: account_hk
+
+  - name: rv_nhsat_account_balance
+    description: "One row per account version, point-in-time balance snapshot. Non-historized: kept for load idempotency, not full change tracking."
+    columns:
+      - name: account_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_account')
+                field: account_hk
+
+  - name: rv_sat_account_alt
+    description: "One row per account version, alternative account identifiers (IBAN, old account number)."
+    columns:
+      - name: account_hk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_hub_account')
+                field: account_hk
+
+  - name: rv_nhsat_stmt_entry_detail
+    description: "One row per statement entry, full entry detail. Non-historized: entries are never amended in place."
+    columns:
+      - name: stmt_entry_hk
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('rv_nhlink_stmt_entry')
+                field: stmt_entry_hk

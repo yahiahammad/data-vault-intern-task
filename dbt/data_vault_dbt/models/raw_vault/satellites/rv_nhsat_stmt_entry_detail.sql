@@ -1,0 +1,12 @@
+{{ automate_dv.sat(src_pk='stmt_entry_hk',
+                   src_hashdiff='stmt_entry_detail_hashdiff',
+                   src_payload=['stmt_entry_id', 'transaction_code', 'product_category', 'currency', 'amount_lcy',
+                                'amount_fcy', 'exchange_rate', 'booking_date', 'value_date', 'processing_date',
+                                'exposure_date', 'system_date_time', 'our_reference', 'their_reference',
+                                'trans_reference', 'reversal_marker', 'narrative', 'cheque_number', 'chq_type',
+                                'counterparty', 'account_officer', 'position_type', 'system_id'],
+                   src_extra_columns=none,
+                   src_eff=none,
+                   src_ldts='load_dts',
+                   src_source='record_source',
+                   source_model='stg_fbnk_stmt_entry') }}

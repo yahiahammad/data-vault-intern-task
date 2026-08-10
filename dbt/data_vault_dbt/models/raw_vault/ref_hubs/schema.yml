@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: rv_ref_hub_account_officer
+    description: "One row per distinct account_officer code observed in the data. No hash key, keyed directly on the code."
+    columns:
+      - name: account_officer
+        data_tests:
+          - unique
+          - not_null
+
+  - name: rv_ref_hub_transaction_code
+    description: "One row per distinct transaction_code observed in fbnk_stmt_entry. No hash key, keyed directly on the code."
+    columns:
+      - name: transaction_code
+        data_tests:
+          - unique
+          - not_null
+
+  - name: rv_ref_hub_product_category
+    description: "One row per distinct product category code observed across fbnk_account.category and fbnk_stmt_entry.product_category. No hash key, keyed directly on the code."
+    columns:
+      - name: product_category
+        data_tests:
+          - unique
+          - not_null

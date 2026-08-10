@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: rv_hub_customer
+    description: "One row per distinct customer business key, sourced only from fbnk_customer (its single authoritative source). A customer number referenced by an account or statement entry but absent here is a referential gap and will fail the relationships tests on those models, by design."
+    columns:
+      - name: customer_hk
+        description: "Hash key of customer_number."
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        data_tests:
+          - not_null
+
+  - name: rv_hub_account
+    description: "One row per distinct account business key, sourced only from fbnk_account (its single authoritative source). An account number referenced by a statement entry but absent here is a referential gap and will fail the relationships tests on that model, by design."
+    columns:
+      - name: account_hk
+        description: "Hash key of account_number."
+        data_tests:
+          - unique
+          - not_null
+      - name: account_number
+        data_tests:
+          - not_null
+
+  - name: rv_hub_branch
+    description: "One row per distinct branch/company code, first seen across fbnk_customer.company_book, fbnk_account.co_code, and fbnk_stmt_entry.company_code."
+    columns:
+      - name: branch_hk
+        description: "Hash key of branch_id."
+        data_tests:
+          - unique
+          - not_null
+      - name: branch_id
+        data_tests:
+          - not_null

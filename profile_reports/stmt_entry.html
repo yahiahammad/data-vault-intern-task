@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>fbnk_stmt_entry profiling</title>
+<style>
+:root { color-scheme: light dark; }
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+  margin: 0; padding: 2rem 3rem 4rem;
+  background: #f6f7f9; color: #1f2328;
+}
+@media (prefers-color-scheme: dark) {
+  body { background: #0d1117; color: #e6edf3; }
+  section, .card { background: #161b22 !important; border-color: #30363d !important; }
+  table { border-color: #30363d !important; }
+  th { background: #21262d !important; }
+  tr.row-bad { background: #3b1418 !important; }
+  tr.row-warn { background: #3a2e12 !important; }
+  .flagged { background: #3b1418 !important; border-color: #cf222e !important; }
+  .bar { background: #2f81f7 !important; }
+  a { color: #58a6ff !important; }
+}
+header { margin-bottom: 1.5rem; }
+h1 { margin: 0 0 .25rem; }
+.subtitle { color: #656d76; margin: 0; }
+nav { margin-bottom: 2rem; }
+nav a { margin-right: 1rem; font-weight: 600; text-decoration: none; }
+.stat-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.card {
+  background: #fff; border: 1px solid #d0d7de; border-radius: 8px;
+  padding: .9rem 1.2rem; min-width: 160px;
+}
+.card .n { font-size: 1.6rem; font-weight: 700; display: block; }
+.card .label { color: #656d76; font-size: .8rem; }
+section {
+  background: #fff; border: 1px solid #d0d7de; border-radius: 8px;
+  padding: 1.2rem 1.5rem; margin-bottom: 1.3rem;
+}
+h2 { font-size: 1.05rem; margin: 0 0 .8rem; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+th, td { text-align: left; padding: .35rem .6rem; border-bottom: 1px solid #eaeef2; }
+th { background: #f6f8fa; }
+tr.row-bad { background: #ffebe9; }
+tr.row-warn { background: #fff8c5; }
+.bar-table td { border: none; padding: .25rem .6rem; }
+.bar-label { width: 12rem; white-space: nowrap; }
+.bar-cell { position: relative; }
+.bar { display: inline-block; height: .9rem; background: #2563eb; border-radius: 3px; vertical-align: middle; }
+.bar-value { margin-left: .5rem; font-size: .8rem; color: #656d76; }
+.flagged {
+  background: #ffebe9; border: 1px solid #cf222e; border-radius: 6px; padding: .6rem 1rem;
+}
+.ok { color: #1a7f37; font-weight: 600; margin: 0; }
+.muted { color: #8b949e; margin: 0; }
+ul { margin: .3rem 0; padding-left: 1.3rem; }
+footer { color: #8b949e; font-size: .8rem; margin-top: 2rem; }
+</style>
+</head>
+<body>
+<header><h1>fbnk_stmt_entry profiling</h1><p class="subtitle">One row per accounting entry; never amended, reversed instead.</p></header>
+<nav><a href="index.html">Overview</a><a href="customer.html">Customer</a><a href="account.html">Account</a><a href="stmt_entry.html">Statement entry</a><a href="cross_table.html">Cross-table</a></nav>
+<div class="stat-row"><div class="card"><span class="n">30</span><span class="label">rows</span></div><div class="card"><span class="n">30</span><span class="label">distinct recid</span></div><div class="card"><span class="n">14</span><span class="label">our_reference groups</span></div><div class="card"><span class="n">0</span><span class="label">double-entry flags</span></div></div>
+<section><h2>Empty columns</h2><table><thead><tr><th>column</th><th>empty</th><th>of</th><th>pct</th><th>status</th></tr></thead><tbody><tr class="row-warn"><td>amount_fcy</td><td>28</td><td>30</td><td>93</td><td>partial</td></tr><tr class="row-warn"><td>exchange_rate</td><td>28</td><td>30</td><td>93</td><td>partial</td></tr><tr class="row-warn"><td>trans_reference</td><td>28</td><td>30</td><td>93</td><td>partial</td></tr><tr class="row-warn"><td>reversal_marker</td><td>28</td><td>30</td><td>93</td><td>partial</td></tr><tr class="row-warn"><td>cheque_number</td><td>26</td><td>30</td><td>87</td><td>partial</td></tr><tr class="row-warn"><td>chq_type</td><td>26</td><td>30</td><td>87</td><td>partial</td></tr><tr class="row-warn"><td>their_reference</td><td>24</td><td>30</td><td>80</td><td>partial</td></tr><tr class="row-warn"><td>counterparty</td><td>21</td><td>30</td><td>70</td><td>partial</td></tr><tr class="row-warn"><td>customer_id</td><td>11</td><td>30</td><td>37</td><td>partial</td></tr></tbody></table></section><section><h2>Grain: recid (never amended, no version)</h2><dl><dt>rows</dt><dd>30</dd><dt>distinct recid</dt><dd>30</dd><dt>ids with more than one row</dt><dd>0</dd></dl></section><section><h2>reversal_marker unexpected values</h2><p class="ok">&#10003; none found</p></section><section><h2>booking_date not a valid YYYYMMDD date</h2><p class="ok">&#10003; none found</p></section><section><h2>value_date not a valid YYYYMMDD date</h2><p class="ok">&#10003; none found</p></section><section><h2>Double-entry: our_reference groups that don&#x27;t net to 0</h2><p class="ok">&#10003; none found</p></section><section><h2>Reversal linkage: trans_reference with no matching recid</h2><p class="ok">&#10003; none found</p></section><section><h2>amount_fcy / exchange_rate set on only one side (should be both or neither)</h2><p class="ok">&#10003; none found</p></section><section><h2>transaction_code distribution</h2><table class="bar-table"><tbody><tr><td class="bar-label">401</td><td class="bar-cell"><div class="bar" style="width:100%"></div><span class="bar-value">6</span></td></tr><tr><td class="bar-label">202</td><td class="bar-cell"><div class="bar" style="width:83%"></div><span class="bar-value">5</span></td></tr><tr><td class="bar-label">102</td><td class="bar-cell"><div class="bar" style="width:67%"></div><span class="bar-value">4</span></td></tr><tr><td class="bar-label">101</td><td class="bar-cell"><div class="bar" style="width:67%"></div><span class="bar-value">4</span></td></tr><tr><td class="bar-label">301</td><td class="bar-cell"><div class="bar" style="width:67%"></div><span class="bar-value">4</span></td></tr><tr><td class="bar-label">201</td><td class="bar-cell"><div class="bar" style="width:50%"></div><span class="bar-value">3</span></td></tr><tr><td class="bar-label">601</td><td class="bar-cell"><div class="bar" style="width:33%"></div><span class="bar-value">2</span></td></tr><tr><td class="bar-label">501</td><td class="bar-cell"><div class="bar" style="width:33%"></div><span class="bar-value">2</span></td></tr></tbody></table></section><section><h2>product_category distribution</h2><table class="bar-table"><tbody><tr><td class="bar-label">1001</td><td class="bar-cell"><div class="bar" style="width:100%"></div><span class="bar-value">18</span></td></tr><tr><td class="bar-label">9999</td><td class="bar-cell"><div class="bar" style="width:61%"></div><span class="bar-value">11</span></td></tr><tr><td class="bar-label">6001</td><td class="bar-cell"><div class="bar" style="width:6%"></div><span class="bar-value">1</span></td></tr></tbody></table></section><section><h2>system_id distribution</h2><table class="bar-table"><tbody><tr><td class="bar-label">FT</td><td class="bar-cell"><div class="bar" style="width:100%"></div><span class="bar-value">10</span></td></tr><tr><td class="bar-label">TT</td><td class="bar-cell"><div class="bar" style="width:80%"></div><span class="bar-value">8</span></td></tr><tr><td class="bar-label">CH</td><td class="bar-cell"><div class="bar" style="width:60%"></div><span class="bar-value">6</span></td></tr><tr><td class="bar-label">CQ</td><td class="bar-cell"><div class="bar" style="width:40%"></div><span class="bar-value">4</span></td></tr><tr><td class="bar-label">IC</td><td class="bar-cell"><div class="bar" style="width:20%"></div><span class="bar-value">2</span></td></tr></tbody></table></section>
+<footer>Generated by profile_data.py</footer>
+</body>
+</html>

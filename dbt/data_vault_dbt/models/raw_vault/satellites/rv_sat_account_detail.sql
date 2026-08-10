@@ -1,0 +1,10 @@
+{{ automate_dv.sat(src_pk='account_hk',
+                   src_hashdiff='account_detail_hashdiff',
+                   src_payload=['short_title', 'account_title_1', 'arabic_title', 'category', 'currency',
+                                'opening_date', 'closure_date', 'record_status', 'closed_online',
+                                'inactiv_marker', 'posting_restrict', 'limit_ref', 'account_officer'],
+                   src_extra_columns=none,
+                   src_eff=none,
+                   src_ldts='load_dts',
+                   src_source='record_source',
+                   source_model='stg_fbnk_account') }}

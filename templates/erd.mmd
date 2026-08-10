@@ -1,0 +1,40 @@
+%% Copy to design/erd.mmd and replace the example content.
+%% The example uses an entity that is not part of this task. It shows the
+%% expected notation only.
+%%
+%% Notation:
+%%   PK marks the primary key of the model.
+%%   FK marks a hash key pointing at another model.
+%%   Draw satellites hanging off their parent, links between their hubs.
+%%
+%% Every model carries a why comment directly above it: one or two lines
+%% saying what one row means and why this is a separate model. That comment
+%% is what we will ask you about. A why that restates the model name says
+%% nothing.
+
+erDiagram
+
+    %% why: branch is referenced by accounts, entries, and staff, and keeps
+    %% its identity independently of any attribute it carries.
+    %% grain: one row per branch that has ever existed.
+    RV_HUB_BRANCH {
+        varchar branch_hash_key PK
+        varchar branch_id
+        timestamp load_dts
+        varchar record_source
+    }
+
+    %% why: all branch attributes come from one source, change rarely, and
+    %% apply to every branch, so they stay in a single satellite.
+    %% grain: one row per branch per change to its descriptive attributes.
+    RV_SAT_BRANCH_PROFILE {
+        varchar branch_hash_key PK_FK
+        timestamp load_dts PK
+        varchar hashdiff
+        varchar branch_name
+        varchar branch_name_ar
+        timestamp created_ts
+        varchar record_source
+    }
+
+    RV_HUB_BRANCH ||--o{ RV_SAT_BRANCH_PROFILE : "describes"

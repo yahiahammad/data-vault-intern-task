@@ -2,7 +2,13 @@ version: 2
 
 models:
   - name: rv_hub_customer
-    description: "One row per distinct customer business key, sourced only from fbnk_customer (its single authoritative source). A customer number referenced by an account or statement entry but absent here is a referential gap and will fail the relationships tests on those models, by design."
+    description: >
+      One row per distinct customer business key, sourced from fbnk_customer (its single
+      authoritative source) plus the unknown-member ghost record ('-1') from
+      int_customer_ghost, which exists so link FKs with no real customer resolve here
+      instead of dangling. Filter customer_id <> '-1' when counting real customers.
+      A customer number referenced by an account or statement entry but absent here is a
+      referential gap and will fail the relationships tests on those models, by design.
     columns:
       - name: customer_hk
         description: "Hash key of customer_number."

@@ -68,7 +68,12 @@ models:
                 field: branch_hk
 
   - name: rv_nhlink_stmt_entry
-    description: "One row per statement entry, an immutable event linking account and branch. Customer is deliberately not a link FK here since it's optional (empty for internal-account entries) - see rv_link_customer_account for that relationship."
+    description: >
+      One row per statement entry, an immutable event linking account, branch and customer.
+      Internal contra-account entries have no customer, so customer_hk carries the
+      unknown-member ghost key (hash of '-1', see macros/unknown_hk.sql) rather than NULL -
+      without it link() would drop those 11 rows and this link would cover only 19 of 30
+      entries. See rv_link_stmt_entry_customer for the same relationship un-ghosted.
     columns:
       - name: stmt_entry_hk
         data_tests:
@@ -88,3 +93,14 @@ models:
               arguments:
                 to: ref('rv_hub_branch')
                 field: branch_hk
+      - name: customer_hk
+        description: "Real customer_hk, or the unknown-member ghost key for internal contra-account entries."
+        data_tests:
+          - not_null
+          # Unscoped: the ghost key resolves to the unknown-member row that
+          # int_customer_ghost unions into rv_hub_customer, so every FK here
+          # points at a real hub row.
+          - relationships:
+              arguments:
+                to: ref('rv_hub_customer')
+                field: customer_hk

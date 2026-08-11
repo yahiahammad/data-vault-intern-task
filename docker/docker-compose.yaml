@@ -18,18 +18,26 @@ x-airflow-common:
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
-    # picked up by Cosmos's PostgresUserPasswordProfileMapping via conn_id="postgres_data_vault"
-    AIRFLOW_CONN_POSTGRES_DATA_VAULT: postgresql://postgres:postgres@postgres:5432/mydb
   volumes:
     - ${AIRFLOW_PROJ_DIR:-./airflow}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-./airflow}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-./airflow}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-./airflow}/plugins:/opt/airflow/plugins
     - ../dbt/data_vault_dbt:/opt/airflow/dbt/data_vault_dbt
+    - ./airflow/profiles.yml:/opt/airflow/dbt/profiles.yml
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
     airflow-postgres:
+      condition: service_healthy
+    # M2: dbt tasks read the source vault from "postgres" and store DuckLake's
+    # catalog there too, so Airflow can't do useful work without it. Without
+    # this, starting only the airflow-* services silently yields ~69 task
+    # failures with "could not translate host name postgres" (a DNS miss --
+    # the container simply isn't there).
+    postgres:
+      condition: service_healthy
+    minio:
       condition: service_healthy
 
 services:
@@ -47,6 +55,11 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./postgres:/docker-entrypoint-initdb.d:ro
       - ../data:/data:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
 
   airflow-postgres:
     image: postgres:16
@@ -161,6 +174,38 @@ services:
     depends_on:
       <<: *airflow-common-depends-on
 
+  # M2: object storage for the silver layer's Parquet files. Speaks the S3 API.
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set in docker/.env}
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # web console
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # One-shot: creates the bucket DuckLake will write Parquet into, then exits.
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        mc alias set local http://minio:9000 "${MINIO_ROOT_USER:-minioadmin}" "${MINIO_ROOT_PASSWORD}"
+        mc mb --ignore-existing local/lake
+
   # Caches Superset's chart/dashboard query results (see docker/superset/superset_config.py).
   redis:
     image: redis:7.2-bookworm
@@ -241,3 +286,4 @@ volumes:
   redis-data:
   superset-postgres-db-volume:
   superset-home:
+  minio-data:

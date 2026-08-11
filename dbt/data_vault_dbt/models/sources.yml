@@ -2,6 +2,7 @@ version: 2
 
 sources:
   - name: raw
+    database: source_pg
     schema: raw
     description: "This is the raw source schema"
     tables: 

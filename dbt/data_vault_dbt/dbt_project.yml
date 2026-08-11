@@ -22,15 +22,22 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "target"
   - "dbt_packages"
 
+# AutomateDV has no built-in DuckDB support (see macros/duckdb_dispatch.sql).
+# This tells dbt to check our own project first for automate_dv-namespaced
+# macros, so our duckdb__ overrides get found before dbt gives up.
+dispatch:
+  - macro_namespace: automate_dv
+    search_order: ['data_vault_dbt', 'automate_dv']
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
-# In this example config, we tell dbt to build all models in the example/
-# directory as views. These settings can be overridden in the individual model
-# files using the `{{ config(...) }}` macro.
 models:
   data_vault_dbt:
+    # Every layer writes into the lake, not just raw_vault: staging/intermediate
+    # are views, but the view *definitions* need to live in the durable DuckLake
+    # catalog too, since the in-memory default catalog dies with the session.
+    +database: lake
     staging:
       +materialized: view
     intermediate:
@@ -43,6 +50,10 @@ models:
         +materialized: incremental
       satellites:
         +materialized: incremental
+
+seeds:
+  data_vault_dbt:
+    +database: lake
 
 tests:
   data_vault_dbt:

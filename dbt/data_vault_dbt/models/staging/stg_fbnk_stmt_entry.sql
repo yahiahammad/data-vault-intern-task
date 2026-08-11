@@ -7,6 +7,11 @@ source_model:
 derived_columns:
   stmt_entry_id: "recid"
   branch_id: "company_code"
+  # Internal contra-account entries have no customer. Substituting the
+  # unknown-member key '-1' here, before hashing, means customer_hk becomes the
+  # ghost key through the normal hashing path -- so rv_nhlink_stmt_entry can
+  # carry customer_hk as an FK and keep all 30 entries (link() drops NULL FKs).
+  customer_id: "coalesce(nullif(customer_id, ''), '-1')"
   load_dts: "cast(current_timestamp as timestamp)"
   record_source: "concat(source_system, '.', source_table)"
 

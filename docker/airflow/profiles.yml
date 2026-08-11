@@ -1,0 +1,41 @@
+# Container-side dbt profile. This is the DuckDB/DuckLake equivalent of
+# ~/.dbt/profiles.yml on your own machine -- same shape, different
+# hostnames, because containers reach each other by service name
+# ("postgres", "minio") while your machine reaches them by "localhost"
+# (Docker publishes their ports to your host too).
+#
+# Referenced by data_vault_dag.py via ProfileConfig(profiles_yml_filepath=...)
+# instead of Cosmos's usual PostgresUserPasswordProfileMapping, since that
+# mapping only knows how to build simple host/user/password profiles -- not
+# DuckDB's extensions/attach/settings shape.
+data_vault_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ':memory:'
+      schema: data_vault
+      # See CLAUDE.md: threads>1 hit a real DuckLake catalog race in local
+      # testing. Untested whether Cosmos's per-task-process concurrency
+      # (as opposed to per-thread, same-connection concurrency) hits the
+      # same issue -- keep at 1 until that's actually verified.
+      threads: 1
+      extensions:
+        - httpfs
+        - postgres
+        - ducklake
+      attach:
+        - path: "dbname=mydb host=postgres port=5432 user=postgres password=postgres"
+          type: postgres
+          alias: source_pg
+          read_only: true
+        - path: "ducklake:postgres:dbname=ducklake_catalog host=postgres port=5432 user=postgres password=postgres"
+          alias: lake
+          options:
+            DATA_PATH: "s3://lake/"
+      settings:
+        s3_endpoint: "minio:9000"
+        s3_access_key_id: "{{ env_var('MINIO_ROOT_USER', 'minioadmin') }}"
+        s3_secret_access_key: "{{ env_var('MINIO_ROOT_PASSWORD') }}"
+        s3_use_ssl: false
+        s3_url_style: "path"

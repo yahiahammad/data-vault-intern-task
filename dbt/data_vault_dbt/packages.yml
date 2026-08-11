@@ -1,3 +1,10 @@
 packages:
   - package: Datavault-UK/automate_dv
     version: 0.11.5
+  # Transitive dependency of automate_dv, declared explicitly on purpose:
+  # Cosmos never symlinks package-lock.yml into its dbt-ls temp dir, so dbt
+  # can't see the resolved dependency tree there and just counts entries here
+  # against folders in dbt_packages/. Leave it implicit and dbt fails with
+  # "expects 1 package(s) ... found 2" whenever the Cosmos dbt-ls cache misses.
+  - package: dbt-labs/dbt_utils
+    version: 1.4.1
